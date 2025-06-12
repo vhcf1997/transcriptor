@@ -17,3 +17,13 @@ class ViewTests(TestCase):
     def test_login_required(self):
         resp = self.client.get('/doctor/images/')
         self.assertEqual(resp.status_code, 302)
+
+    def test_doctor_only_access(self):
+        self.client.login(username='h', password='x')
+        resp = self.client.get('/doctor/images/')
+        self.assertEqual(resp.status_code, 302)
+
+    def test_doctor_access_success(self):
+        self.client.login(username='d', password='x')
+        resp = self.client.get('/doctor/images/')
+        self.assertEqual(resp.status_code, 200)
