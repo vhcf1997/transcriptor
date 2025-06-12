@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Sucesso!</title>
+</head>
+<body>
+    <h1>Áudio enviado!</h1>
+    <p>Seu áudio (ID: {{ pk }}) foi recebido e está na fila para ser transcrito.</p>
+    <p>Você pode acompanhar o status na <a href="/admin/core/transcricao/">página de administração</a>.</p>
+    <p><a href="{% url 'upload' %}">Enviar outro áudio</a></p>
+</body>
+</html>
