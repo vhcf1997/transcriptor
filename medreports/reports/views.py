@@ -3,11 +3,23 @@ from django.contrib.auth.decorators import login_required
 from .models import MedicalImage, AudioReport
 from .forms import ImageUploadForm, AudioUploadForm, TranscriptForm
 import speech_recognition as sr
+from pydub import AudioSegment
 
 
 def transcribe_audio(path):
+    """Transcribe an audio file using pocketsphinx."""
     r = sr.Recognizer()
-    with sr.AudioFile(path) as source:
+
+    # SpeechRecognition supports wav/AIFF/FLAC. Convert other formats.
+    if not path.lower().endswith(('.wav', '.aiff', '.flac')):
+        sound = AudioSegment.from_file(path)
+        wav_path = path + '.wav'
+        sound.export(wav_path, format='wav')
+        audio_path = wav_path
+    else:
+        audio_path = path
+
+    with sr.AudioFile(audio_path) as source:
         audio = r.record(source)
     try:
         return r.recognize_sphinx(audio)
@@ -31,11 +43,15 @@ def hospital_upload(request):
 
 @login_required
 def doctor_images(request):
+    if not request.user.role == 'doctor':
+        return redirect('login')
     images = MedicalImage.objects.filter(doctor=request.user)
     return render(request, 'doctor_images.html', {'images': images})
 
 @login_required
 def upload_audio(request, pk):
+    if request.user.role != 'doctor':
+        return redirect('login')
     image = get_object_or_404(MedicalImage, pk=pk, doctor=request.user)
     if request.method == 'POST':
         form = AudioUploadForm(request.POST, request.FILES)
@@ -53,6 +69,8 @@ def upload_audio(request, pk):
 
 @login_required
 def review_transcript(request, pk):
+    if request.user.role != 'doctor':
+        return redirect('login')
     report = get_object_or_404(AudioReport, pk=pk, doctor=request.user)
     if request.method == 'POST':
         form = TranscriptForm(request.POST, instance=report)
