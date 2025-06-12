@@ -14,7 +14,7 @@ def upload_view(request):
             transcrever_audio_task.delay(nova_transcricao.id)
 
             # Redireciona para uma página de sucesso
-            return redirect('sucesso', pk=nova_transcricao.id)
+            return redirect('core:sucesso', pk=nova_transcricao.id)
     else:
         form = TranscricaoForm()
     return render(request, 'core/upload.html', {'form': form})
