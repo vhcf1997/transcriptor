@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Assigned Images</h2>
+<ul>
+  {% for img in images %}
+  <li>
+    <img src="{{ img.image.url }}" width="200"/>
+    <a href="{% url 'upload_audio' img.pk %}">Upload Audio</a>
+    {% for report in img.reports.all %}
+      {% if report.approved %}- Transcript Approved{% endif %}
+    {% endfor %}
+  </li>
+  {% endfor %}
+</ul>
+{% endblock %}

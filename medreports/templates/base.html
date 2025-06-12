@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MedReports</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+<nav class="navbar navbar-light bg-light mb-4">
+  <div class="container-fluid">
+    <span class="navbar-brand">MedReports</span>
+    {% if user.is_authenticated %}
+      <a class="btn btn-secondary" href="{% url 'logout' %}">Logout</a>
+    {% endif %}
+  </div>
+</nav>
+<div class="container">
+    {% block content %}{% endblock %}
+</div>
+</body>
+</html>
